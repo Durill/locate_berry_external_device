@@ -1,8 +1,10 @@
 from re import match
 from getpass import getpass
 
+__all__ = ("UserInputHandler",)
 
-class UserInput:
+
+class UserInputHandler:
     EMAIL_PATTER = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     MINIMUM_PASSWORD_LENGTH = 5
 

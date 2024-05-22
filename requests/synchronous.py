@@ -1,29 +1,21 @@
 from httpx import Client
+from requests.interface import IRequest
+
+__all__ = ("SynchronousRequest",)
 
 
-class SynchronousRequests:
+class SynchronousRequest(IRequest):
     def __init__(self, server_url: str, client: Client) -> None:
         self.server_url = server_url
         self.client = client
 
-    def perform_health_check(self) -> int:
+    def send_get_request(self, url: str):
         return self.client.get(
-            f"{self.server_url}/api/health-check/"
-        ).status_code
+            f"{self.server_url}{url}"
+        )
 
-    def register_device(
-        self,
-        device_id: str,
-        device_name: str,
-        owner_email: str,
-    ) -> int:
-        payload = {
-            "device_id": device_id,
-            "device_name": device_name,
-            "user_email": owner_email,
-        }
-
-        return self.client.post(
-            url=f"{self.server_url}/device/api/register/",
+    def send_post_request(self, url: str, payload: dict = None):
+        self.client.post(
+            url=f"{self.server_url}{url}",
             data=payload,
-        ).status_code
+        )

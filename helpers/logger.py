@@ -1,5 +1,7 @@
 from datetime import datetime
 
+__all__ = ("CustomLogger",)
+
 
 class CustomLogger:
     def log_to_file_and_screen(self, message: str) -> None:
