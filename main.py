@@ -84,6 +84,7 @@ if __name__ == '__main__':
                 )
                 if result['status_code'] == 201:
                     settings.TRIP_ID = result['trip_id']
+                    logger.log_to_file_and_screen('Trip Created')
                 elif result['status_code'] == 401:
                     get_new_authorization(
                         request_sender=request_sender,
@@ -108,6 +109,7 @@ if __name__ == '__main__':
                     )
                 elif result['status_code'] != 200:
                     raise httpx.HTTPError
+                logger.log_to_file_and_screen('Trip Updated')
 
             localization.previous_update_ending_point = localization_points[2]
 
