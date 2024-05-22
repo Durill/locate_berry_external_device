@@ -82,7 +82,7 @@ if __name__ == '__main__':
                     device_id=settings.DEVICE_ID,
                     access_token=settings.ACCESS_TOKEN
                 )
-                if result['status_code'] == 200:
+                if result['status_code'] == 201:
                     settings.TRIP_ID = result['trip_id']
                 elif result['status_code'] == 401:
                     get_new_authorization(
