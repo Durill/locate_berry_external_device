@@ -62,9 +62,9 @@ if __name__ == '__main__':
             geometry = {
                 "type": "LineString",
                 "coordinates": [
-                    [localization_points[0].x, localization_points[0].y],
-                    [localization_points[1].x, localization_points[1].y],
-                    [localization_points[2].x, localization_points[2].y],
+                    [localization_points[0].longitude, localization_points[0].latitude],
+                    [localization_points[1].longitude, localization_points[1].latitude],
+                    [localization_points[2].longitude, localization_points[2].latitude],
                 ]
             }
 

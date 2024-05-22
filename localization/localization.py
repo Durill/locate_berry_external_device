@@ -1,12 +1,21 @@
 import time
+from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 from helpers.logger import CustomLogger
 from localization import ILocalization
 from serial import Serial
-from shapely import Point
 
-__all__ = ("Localization",)
+__all__ = (
+    "LocalizationPoint",
+    "Localization",
+)
+
+
+@dataclass
+class LocalizationPoint:
+    longitude: float
+    latitude: float
 
 
 class Localization(ILocalization):
@@ -31,7 +40,7 @@ class Localization(ILocalization):
         'station_ID',
         'checksum'
     ]
-    previous_update_ending_point: Point = None
+    previous_update_ending_point: LocalizationPoint = None
 
     def __init__(self, logger: CustomLogger):
         self.serial_port = Serial(port='/dev/ttyS0', baudrate=9600, timeout=2)
@@ -50,7 +59,7 @@ class Localization(ILocalization):
         else:
             self.logger.log_to_file_and_screen('ERROR, while supplying power to GNSS module')
 
-    def get_actual_localization(self) -> Optional[List[Point]]:
+    def get_actual_localization(self) -> Optional[List[LocalizationPoint]]:
         localization_points = []
 
         if self.previous_update_ending_point:
@@ -84,7 +93,7 @@ class Localization(ILocalization):
 
         return localization_points
 
-    def _parse_localization_to_point(self, latitude: float, longitude: float) -> Point:
+    def _parse_localization_to_point(self, latitude: float, longitude: float) -> LocalizationPoint:
         latitude_degree = int(latitude // 100)
         latitude_minutes = latitude % 100
         latitude_decimal_degree = latitude_degree + (latitude_minutes / 60)
@@ -93,7 +102,7 @@ class Localization(ILocalization):
         longitude_minutes = longitude % 100
         longitude_decimal_degree = longitude_degree + (longitude_minutes / 60)
 
-        result_point = Point(longitude_decimal_degree, latitude_decimal_degree)
+        result_point = LocalizationPoint(longitude=longitude_decimal_degree, latitude=latitude_decimal_degree)
         return result_point
 
     def _parse_statuses(self, raw_response: str) -> Dict[str, str]:
