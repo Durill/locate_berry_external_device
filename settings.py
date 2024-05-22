@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
-from uuid import uuid4
 
 from helpers.logger import CustomLogger
-from user_input.handler import UserInputHandler
 
 __all__ = ("Settings",)
 

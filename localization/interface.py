@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 __all__ = ("ILocalization",)
-
-from localization import LocalizationPoint
 
 
 class ILocalization(ABC):
@@ -13,5 +10,5 @@ class ILocalization(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_actual_localization(self) -> Optional[LocalizationPoint]:
+    def get_actual_localization(self):
         raise NotImplementedError
