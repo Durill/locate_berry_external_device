@@ -31,6 +31,7 @@ class Localization(ILocalization):
         'station_ID',
         'checksum'
     ]
+    previous_update_ending_point: Point = None
 
     def __init__(self, logger: CustomLogger):
         self.serial_port = Serial(port='/dev/ttyS0', baudrate=9600, timeout=2)
@@ -49,29 +50,39 @@ class Localization(ILocalization):
         else:
             self.logger.log_to_file_and_screen('ERROR, while supplying power to GNSS module')
 
-    def get_actual_localization(self) -> Optional[Point]:
-        gnss_localization_data = self._send_command(self.ATCommands.GET_ACTUAL_LOCALIZATION)
+    def get_actual_localization(self) -> Optional[List[Point]]:
+        localization_points = []
 
-        listed_data = gnss_localization_data.split('\n')
-        localization_raw: List[str] = []
-        sorted_localization_data: Dict[str, str] = {}
+        if self.previous_update_ending_point:
+            localization_points.append(self.previous_update_ending_point)
 
-        for data in listed_data:
-            if data.startswith('$GNGGA'):
-                data = data.removeprefix('$GNGGA,')
-                localization_raw = data.split(',')
-                break
+        while len(localization_points) <= 3:
+            gnss_localization_data = self._send_command(self.ATCommands.GET_ACTUAL_LOCALIZATION)
 
-        for i in range(len(localization_raw)):
-            sorted_localization_data[self.details_names[i]] = localization_raw[i]
+            listed_data = gnss_localization_data.split('\n')
+            localization_raw: List[str] = []
+            sorted_localization_data: Dict[str, str] = {}
 
-        if len(sorted_localization_data['latitude']) < 1 or len(sorted_localization_data['longitude']) < 1:
-            return None
+            for data in listed_data:
+                if data.startswith('$GNGGA'):
+                    data = data.removeprefix('$GNGGA,')
+                    localization_raw = data.split(',')
+                    break
 
-        return self._parse_localization_to_point(
-            latitude=float(sorted_localization_data['latitude']),
-            longitude=float(sorted_localization_data['longitude']),
-        )
+            for i in range(len(localization_raw)):
+                sorted_localization_data[self.details_names[i]] = localization_raw[i]
+
+            if len(sorted_localization_data['latitude']) < 1 or len(sorted_localization_data['longitude']) < 1:
+                continue
+
+            single_point = self._parse_localization_to_point(
+                latitude=float(sorted_localization_data['latitude']),
+                longitude=float(sorted_localization_data['longitude']),
+            )
+            if single_point:
+                localization_points.append(single_point)
+
+        return localization_points
 
     def _parse_localization_to_point(self, latitude: float, longitude: float) -> Point:
         latitude_degree = int(latitude // 100)
