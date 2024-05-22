@@ -72,7 +72,7 @@ if __name__ == '__main__':
                 "coordinates": [
                     [localization_points[0].longitude, localization_points[0].latitude],
                     [localization_points[1].longitude, localization_points[1].latitude],
-                    [localization_points[2].longitude, localization_points[2].latitude],
+                    [localization_points[2].longitude, localization_points[2].latitude]
                 ]
             }
 
