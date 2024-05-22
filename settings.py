@@ -86,8 +86,8 @@ class Settings:
             if line.startswith('REFRESH_TOKEN'):
                 old_refresh_token = line
 
-        data = data.replace(old_access_token, self.ACCESS_TOKEN)
-        data = data.replace(old_refresh_token, self.REFRESH_TOKEN)
+        data = data.replace(old_access_token, f'ACCESS_TOKEN={self.ACCESS_TOKEN}')
+        data = data.replace(old_refresh_token, f'REFRESH_TOKEN={self.REFRESH_TOKEN}')
 
         with (open(self.FILE_NAME, 'w') as file):
             file.write(data)
@@ -105,7 +105,7 @@ class Settings:
             if line.startswith('ACCESS_TOKEN'):
                 old_access_token = line
 
-        data = data.replace(old_access_token, self.ACCESS_TOKEN)
+        data = data.replace(old_access_token, f'ACCESS_TOKEN={self.ACCESS_TOKEN}')
 
         with (open(self.FILE_NAME, 'w') as file):
             file.write(data)
