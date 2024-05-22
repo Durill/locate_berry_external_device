@@ -17,14 +17,14 @@ class SynchronousRequest(IRequest):
         )
 
     def send_post_request(self, url: str, payload: dict = None, headers: Dict[str, str] = None):
-        self.client.post(
+        return self.client.post(
             url=f"{self.server_url}{url}",
             data=payload,
             headers=headers,
         )
 
     def send_put_request(self, url: str, payload: dict = None, headers: Dict[str, str] = None):
-        self.client.put(
+        return self.client.put(
             url=f"{self.server_url}{url}",
             data=payload,
             headers=headers,

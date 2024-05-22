@@ -1,3 +1,4 @@
+import json
 from typing import Dict, Union
 
 from requests.synchronous import SynchronousRequest
@@ -31,7 +32,7 @@ class RequestSender:
             url="/api/device/register/",
             payload=payload
         )
-        body = result.text
+        body = json.loads(result.text)
 
         register_parameters = {
             "device_id": body["device_id"],
@@ -52,7 +53,7 @@ class RequestSender:
             url="/api/token/",
             payload=payload
         )
-        body = result.text
+        body = json.loads(result.text)
 
         response_parameters = {
             "access_token": body["access"],
@@ -71,7 +72,7 @@ class RequestSender:
             url="/api/token/refresh/",
             payload=payload
         )
-        body = result.text
+        body = json.loads(result.text)
 
         response_parameters = {
             "access_token": body["access"],
@@ -94,7 +95,7 @@ class RequestSender:
             payload=payload,
             headers=headers
         )
-        body = result.text
+        body = json.loads(result.text)
 
         response_parameters = {
             "trip_id": body["trip_id"],

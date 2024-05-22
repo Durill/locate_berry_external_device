@@ -55,7 +55,7 @@ class Settings:
         return None
 
     def register_and_bind_device(self, register_parameters: dict) -> None:
-        if register_parameters['status_code'] == 201:
+        if register_parameters['status_code'] == 200:
             self.DEVICE_ID = register_parameters['device_id']
             self.OWNER_EMAIL = register_parameters['email']
             self.PASSWORD = register_parameters['password']

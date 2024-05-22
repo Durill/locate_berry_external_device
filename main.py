@@ -43,6 +43,14 @@ if __name__ == '__main__':
             else:
                 register_parameters = request_sender.register_device()
                 settings.register_and_bind_device(register_parameters=register_parameters)
+                tokens = request_sender.get_tokens(
+                    device_id=settings.DEVICE_ID,
+                    password=settings.PASSWORD,
+                )
+                settings.set_new_tokens(
+                    access_token=tokens['access_token'],
+                    refresh_token=tokens['refresh_token']
+                )
                 logger.log_to_file_and_screen("Device registered properly!")
 
             settings.SYSTEM_CHECKED = True

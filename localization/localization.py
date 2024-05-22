@@ -106,10 +106,11 @@ class Localization(ILocalization):
         return result_point
 
     def _parse_statuses(self, raw_response: str) -> Dict[str, str]:
-        formatted_data = raw_response.split('/n')
-        return {'command': formatted_data[0], 'status': formatted_data[1]}
+        formatted_data = raw_response.split('\n')
+
+        return {'command': formatted_data[0].replace('\r', ''), 'status': formatted_data[1].replace('\r', '')}
 
     def _send_command(self, command: str):
         self.serial_port.write((command + '\r\n').encode())
         time.sleep(2.5)
-        return self.serial_port.readall().decode()
+        return self.serial_port.read_all().decode()
