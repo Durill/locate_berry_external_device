@@ -62,7 +62,7 @@ if __name__ == '__main__':
             logger.log_to_file_and_screen(f"Exception: {error}")
             sleep(5)
 
-    logger.log_to_file_and_screen(f"\n--- Preparing for localization transmission at {datetime.now()} ---\n")
+    logger.log_to_file_and_screen(f"--- Preparing for localization transmission ---")
     while settings.TRANSMITTING:
         try:
             start_time = datetime.now()

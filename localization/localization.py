@@ -43,10 +43,26 @@ class Localization(ILocalization):
     previous_update_ending_point: LocalizationPoint = None
 
     def __init__(self, logger: CustomLogger):
-        self.serial_port = Serial(port='/dev/ttyS0', baudrate=9600, timeout=2)
+        self.serial_port = self._change_serial_port_config()
         self.logger = logger
 
     def set_and_power_module(self) -> None:
+        # Module have to be warmed up and proper baudrate need to be set
+        self.logger.log_to_file_and_screen('Warming up communication module')
+        while True:
+            port = self._send_command(self.ATCommands.SET_PORT)
+            power = self._send_command(self.ATCommands.SUPPLY_POWER)
+            trial_location = self._send_command(self.ATCommands.GET_ACTUAL_LOCALIZATION)
+            if len(port) > 0 or len(power) > 0 or len(trial_location) > 0:
+                break
+            if self.serial_port.baudrate == 9600:
+                self.logger.log_to_file_and_screen('Changing baudrate...')
+                self.serial_port = self._change_serial_port_config(baudrate=115200)
+            else:
+                self.logger.log_to_file_and_screen('Changing baudrate...')
+                self.serial_port = self._change_serial_port_config()
+        self.logger.log_to_file_and_screen(f'Baudrate set to {self.serial_port.baudrate} b/s')
+
         gnss_data_port_setted = self._send_command(self.ATCommands.SET_PORT)
         if self._parse_statuses(raw_response=gnss_data_port_setted)['status'] == 'OK':
             self.logger.log_to_file_and_screen('GNSS data port has been set')
@@ -92,6 +108,9 @@ class Localization(ILocalization):
                 localization_points.append(single_point)
 
         return localization_points
+
+    def _change_serial_port_config(self, baudrate: int = 9600) -> Serial:
+        return Serial(port='/dev/ttyS0', baudrate=baudrate, timeout=2)
 
     def _parse_localization_to_point(self, latitude: float, longitude: float) -> LocalizationPoint:
         latitude_degree = int(latitude // 100)
